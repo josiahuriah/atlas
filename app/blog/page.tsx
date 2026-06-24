@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react'
+import { Calendar, ArrowRight, Newspaper } from 'lucide-react'
 import { getAllPosts } from '@/lib/blog'
+import { formatDate } from '@/lib/format'
 import WaveDivider from '@/components/WaveDivider'
 import AnimatedSection from '@/components/AnimatedSection'
+import PostImage from '@/components/blog/PostImage'
 
 export const metadata: Metadata = {
   title: 'Customs & Import Guides — Blog',
@@ -13,35 +15,37 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   const posts = getAllPosts()
+  const [featured, ...rest] = posts
+  const secondary = rest.slice(0, 2)
+  const more = rest.slice(2)
 
   return (
     <>
       {/* Hero */}
-      <section className="relative bg-navy py-24 md:py-32 section-padding overflow-hidden noise-overlay">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+      <section className="relative bg-navy py-20 md:py-28 section-padding overflow-hidden noise-overlay">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
+              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
           }}
         />
-        <div className="relative z-10 max-w-7xl mx-auto">
+        <div className="relative z-10 max-w-5xl mx-auto">
           <AnimatedSection>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="h-px w-12 bg-gold" />
-              <span className="text-gold font-montserrat font-semibold text-sm tracking-[0.2em] uppercase">
-                Insights & Guides
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-gold" />
+              <span className="text-gold font-montserrat font-bold text-xs tracking-[0.22em] uppercase">
+                Insights &amp; Guides
               </span>
             </div>
-            <h1 className="font-montserrat font-extrabold text-4xl md:text-5xl lg:text-6xl text-white mb-6">
+            <h1 className="font-montserrat font-extrabold text-4xl md:text-5xl lg:text-6xl text-white mb-5">
               The Atlas <span className="text-gold">Blog</span>
             </h1>
-            <p className="text-white/60 text-lg md:text-xl max-w-2xl">
-              Expert guides on importing to The Bahamas, customs clearance
-              processes, duty rates, and everything you need to know about
-              Click2Clear.
+            <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-xl">
+              Expert guides on importing to The Bahamas, customs clearance, duty
+              rates, and everything you need to know about Click2Clear.
             </p>
           </AnimatedSection>
         </div>
@@ -49,95 +53,148 @@ export default function BlogPage() {
       </section>
 
       {/* Blog Content */}
-      <section className="bg-white py-16 md:py-24 section-padding">
-        <div className="max-w-7xl mx-auto">
+      <section className="bg-white py-14 md:py-20 section-padding">
+        <div className="max-w-5xl mx-auto">
           {posts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post, i) => (
-                <AnimatedSection key={post.slug} delay={i * 0.08}>
+            <>
+              {/* Featured article */}
+              {featured && (
+                <AnimatedSection>
                   <Link
-                    href={`/blog/${post.slug}`}
-                    className="group block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden
-                               hover:border-ocean-blue/30 hover:shadow-xl hover:shadow-ocean-blue/5
-                               hover:-translate-y-1 transition-all duration-500"
+                    href={`/blog/${featured.slug}`}
+                    className="group block rounded-2xl overflow-hidden mb-10 shadow-[0_4px_24px_rgba(0,51,102,0.10)]
+                               hover:shadow-[0_10px_36px_rgba(0,51,102,0.18)] transition-shadow duration-500"
                   >
-                    {/* Image placeholder */}
-                    <div className="h-48 bg-gradient-to-br from-navy to-ocean-blue relative overflow-hidden">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <BookOpen className="w-12 h-12 text-white/20" />
-                      </div>
-                      <div className="absolute top-4 left-4">
-                        <span className="bg-gold text-navy text-xs font-semibold px-3 py-1 rounded-full">
-                          {post.category}
+                    <PostImage
+                      src={featured.image}
+                      alt={featured.title}
+                      priority
+                      sizes="(min-width: 1024px) 64rem, 100vw"
+                      className="h-72 md:h-80"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#000f32]/90 via-[#000f32]/20 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                        <span className="inline-block bg-gold text-navy font-montserrat font-extrabold text-[10px] tracking-wide px-3 py-1 rounded-full mb-3">
+                          FEATURED
                         </span>
+                        <h2 className="font-montserrat font-extrabold text-2xl md:text-3xl text-white leading-snug mb-3 max-w-2xl group-hover:text-gold/95 transition-colors">
+                          {featured.title}
+                        </h2>
+                        <div className="flex items-center gap-3 text-white/65 text-xs md:text-sm">
+                          <span>{formatDate(featured.date)}</span>
+                          <span aria-hidden>·</span>
+                          <span>{featured.author}</span>
+                          <span aria-hidden>·</span>
+                          <span>{featured.readingTime}</span>
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="p-6">
-                      <div className="flex items-center gap-4 text-mid-grey text-xs mb-3">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-3.5 h-3.5" />
-                          {new Date(post.date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <User className="w-3.5 h-3.5" />
-                          {post.author}
-                        </span>
-                      </div>
-                      <h2 className="font-montserrat font-bold text-lg text-navy mb-2 group-hover:text-ocean-blue transition-colors line-clamp-2">
-                        {post.title}
-                      </h2>
-                      <p className="text-near-black/60 text-sm leading-relaxed line-clamp-3 mb-4">
-                        {post.description}
-                      </p>
-                      <span className="text-ocean-blue text-sm font-semibold flex items-center gap-1">
-                        Read more
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                      </span>
-                    </div>
+                    </PostImage>
                   </Link>
                 </AnimatedSection>
-              ))}
-            </div>
-          ) : (
-            /* Empty state */
-            <AnimatedSection>
-              <div className="text-center py-20 px-6">
-                <div className="w-20 h-20 bg-sky-blue rounded-2xl flex items-center justify-center mx-auto mb-8">
-                  <BookOpen className="w-10 h-10 text-ocean-blue" />
-                </div>
-                <h2 className="font-montserrat font-bold text-2xl text-navy mb-4">
-                  Coming Soon
-                </h2>
-                <p className="text-near-black/60 max-w-lg mx-auto mb-8 leading-relaxed">
-                  We&apos;re preparing expert guides on importing to The Bahamas,
-                  understanding duty rates, navigating Click2Clear, and much more.
-                  Check back soon for helpful content.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {[
-                    'Vehicle Import Guides',
-                    'Duty Rate Breakdowns',
-                    'Click2Clear Tips',
-                    'Exemption Explainers',
-                  ].map(tag => (
-                    <span
-                      key={tag}
-                      className="bg-sky-blue text-ocean-blue text-sm px-4 py-2 rounded-full font-medium"
-                    >
-                      {tag}
-                    </span>
+              )}
+
+              {/* Secondary grid */}
+              {secondary.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-7">
+                  {secondary.map((post, i) => (
+                    <AnimatedSection key={post.slug} delay={i * 0.08}>
+                      <ArticleCard post={post} imgClass="h-44" />
+                    </AnimatedSection>
                   ))}
                 </div>
+              )}
+
+              {/* More articles */}
+              {more.length > 0 && (
+                <div className="mt-12 pt-10 border-t-2 border-gray-100">
+                  <h2 className="font-montserrat font-bold text-xl text-navy mb-6">
+                    More Articles
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-7">
+                    {more.map((post, i) => (
+                      <AnimatedSection key={post.slug} delay={i * 0.06}>
+                        <ArticleCard post={post} imgClass="h-36" compact />
+                      </AnimatedSection>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            /* Empty state — no posts authored yet */
+            <AnimatedSection>
+              <div className="text-center max-w-xl mx-auto py-16 px-6">
+                <div className="w-16 h-16 bg-sky-blue rounded-2xl flex items-center justify-center mx-auto mb-7">
+                  <Newspaper className="w-8 h-8 text-ocean-blue" />
+                </div>
+                <h2 className="font-montserrat font-bold text-2xl text-navy mb-3">
+                  Fresh guides are on the way
+                </h2>
+                <p className="text-near-black/60 leading-relaxed mb-8">
+                  We&apos;re putting together clear, practical guides on importing to
+                  The Bahamas — vehicles, duty rates, Click2Clear, exemptions, and
+                  more. Check back soon.
+                </p>
+                <Link href="/contact" className="btn-primary !text-sm !py-2.5">
+                  Have a question now? Get in touch
+                </Link>
               </div>
             </AnimatedSection>
           )}
         </div>
       </section>
     </>
+  )
+}
+
+function ArticleCard({
+  post,
+  imgClass,
+  compact = false,
+}: {
+  post: ReturnType<typeof getAllPosts>[number]
+  imgClass: string
+  compact?: boolean
+}) {
+  return (
+    <Link
+      href={`/blog/${post.slug}`}
+      className="group flex flex-col h-full rounded-2xl border-2 border-gray-100 overflow-hidden
+                 hover:border-ocean-blue/30 hover:shadow-xl hover:shadow-ocean-blue/5
+                 hover:-translate-y-1 transition-all duration-500"
+    >
+      <PostImage
+        src={post.image}
+        alt={post.title}
+        sizes="(min-width: 768px) 32rem, 100vw"
+        className={imgClass}
+      />
+      <div className="flex flex-col flex-1 p-5">
+        <div className="flex items-center gap-2 text-mid-grey text-[11px] mb-2">
+          <Calendar className="w-3.5 h-3.5" />
+          <span>{formatDate(post.date)}</span>
+          <span aria-hidden className="text-gray-300">
+            ·
+          </span>
+          <span>{post.readingTime}</span>
+        </div>
+        <h3
+          className={`font-montserrat font-bold text-navy leading-snug mb-2 group-hover:text-ocean-blue transition-colors line-clamp-2 ${
+            compact ? 'text-[15px]' : 'text-base md:text-lg'
+          }`}
+        >
+          {post.title}
+        </h3>
+        {!compact && post.description && (
+          <p className="text-near-black/60 text-sm leading-relaxed line-clamp-2 mb-4">
+            {post.description}
+          </p>
+        )}
+        <span className="mt-auto text-ocean-blue text-xs font-semibold inline-flex items-center gap-1">
+          Read more
+          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+        </span>
+      </div>
+    </Link>
   )
 }
