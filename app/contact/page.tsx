@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react'
 import WaveDivider from '@/components/WaveDivider'
 import AnimatedSection from '@/components/AnimatedSection'
 import ContactForm from '@/components/ContactForm'
@@ -22,6 +22,12 @@ const contactInfo = [
     label: 'Phone',
     value: '(242) 819-4311',
     href: 'tel:+12428194311',
+  },
+  {
+    icon: MessageCircle,
+    label: 'WhatsApp',
+    value: 'Message us on WhatsApp',
+    href: 'https://wa.me/12428194311',
   },
   {
     icon: Mail,

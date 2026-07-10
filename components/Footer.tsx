@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, Phone, Mail, Clock, ArrowUpRight } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, ArrowUpRight, MessageCircle } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -105,6 +105,17 @@ export default function Footer() {
                 <Phone className="w-4 h-4 text-gold mt-0.5 shrink-0" />
                 <a href="tel:+12428194311" className="text-white/60 hover:text-white text-sm transition-colors">
                   (242) 819-4311
+                </a>
+              </li>
+              <li className="flex items-start gap-3">
+                <MessageCircle className="w-4 h-4 text-gold mt-0.5 shrink-0" />
+                <a
+                  href="https://wa.me/12428194311"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/60 hover:text-white text-sm transition-colors"
+                >
+                  WhatsApp us
                 </a>
               </li>
               <li className="flex items-start gap-3">

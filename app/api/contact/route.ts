@@ -40,9 +40,10 @@ export async function POST(request: Request) {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
 
-        await resend.emails.send({
-          from: 'Atlas Brokerage <noreply@atlasbrokerage.bs>',
-          to: process.env.CONTACT_EMAIL || 'info@atlasbrokerage.bs',
+        const { error: sendError } = await resend.emails.send({
+          from: process.env.EMAIL_FROM || 'Atlas Brokerage <noreply@atlasbrokeragecompany.com>',
+          to: process.env.CONTACT_EMAIL || 'info@atlasbrokeragecompany.com',
+          replyTo: email,
           subject: `New Contact Form Submission from ${name}`,
           html: `
             <h2>New Contact Form Submission</h2>
@@ -58,6 +59,9 @@ export async function POST(request: Request) {
             </p>
           `,
         })
+        if (sendError) {
+          console.error('Resend API error:', sendError)
+        }
       } catch (emailError) {
         // Log email error but don't fail the request — DB save was successful
         console.error('Email send failed:', emailError)

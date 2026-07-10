@@ -305,7 +305,7 @@ export default function HomePage() {
                 Get a Free Quote
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
-              <a href="tel:+12420000000" className="btn-outline-white">
+              <a href="tel:+12428194311" className="btn-outline-white">
                 <Phone className="w-5 h-5 mr-2" />
                 Call Us Now
               </a>
