@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 
 export async function POST(request: Request) {
   try {
@@ -23,57 +22,72 @@ export async function POST(request: Request) {
       )
     }
 
-    // Save to database
-    const submission = await prisma.contactSubmission.create({
-      data: {
-        name,
-        email,
-        phone: phone || null,
-        service: service || null,
-        message,
-      },
-    })
-
-    // Send email notification if Resend is configured
-    if (process.env.RESEND_API_KEY) {
+    // Save to database if configured (optional — SQLite is unavailable on Vercel)
+    let submissionId: number | null = null
+    if (process.env.DATABASE_URL) {
       try {
-        const { Resend } = await import('resend')
-        const resend = new Resend(process.env.RESEND_API_KEY)
-
-        const { error: sendError } = await resend.emails.send({
-          from: process.env.EMAIL_FROM || 'Atlas Brokerage <noreply@atlasbrokeragecompany.com>',
-          to: process.env.CONTACT_EMAIL || 'info@atlasbrokeragecompany.com',
-          replyTo: email,
-          subject: `New Contact Form Submission from ${name}`,
-          html: `
-            <h2>New Contact Form Submission</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-            ${service ? `<p><strong>Service:</strong> ${service}</p>` : ''}
-            <p><strong>Message:</strong></p>
-            <p>${message.replace(/\n/g, '<br>')}</p>
-            <hr>
-            <p style="color: #888; font-size: 12px;">
-              Submission ID: ${submission.id} | ${new Date().toLocaleString()}
-            </p>
-          `,
+        const { prisma } = await import('@/lib/prisma')
+        const submission = await prisma.contactSubmission.create({
+          data: {
+            name,
+            email,
+            phone: phone || null,
+            service: service || null,
+            message,
+          },
         })
-        if (sendError) {
-          console.error('Resend API error:', sendError)
-        }
-      } catch (emailError) {
-        // Log email error but don't fail the request — DB save was successful
-        console.error('Email send failed:', emailError)
+        submissionId = submission.id
+      } catch (dbError) {
+        // Log but don't fail — email notification is the primary channel
+        console.error('DB save failed:', dbError)
       }
-    } else {
-      console.log('RESEND_API_KEY not set — skipping email notification. Submission saved to database.')
     }
 
-    return NextResponse.json(
-      { success: true, id: submission.id },
-      { status: 201 }
-    )
+    // Send email notification
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not set — cannot deliver contact form email.')
+      if (!submissionId) {
+        return NextResponse.json(
+          { error: 'Something went wrong. Please try again or contact us directly.' },
+          { status: 500 }
+        )
+      }
+    } else {
+      const { Resend } = await import('resend')
+      const resend = new Resend(process.env.RESEND_API_KEY)
+
+      const { error: sendError } = await resend.emails.send({
+        from: process.env.EMAIL_FROM || 'Atlas Brokerage <noreply@atlasbrokeragecompany.com>',
+        to: process.env.CONTACT_EMAIL || 'info@atlasbrokeragecompany.com',
+        replyTo: email,
+        subject: `New Contact Form Submission from ${name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
+          ${service ? `<p><strong>Service:</strong> ${service}</p>` : ''}
+          <p><strong>Message:</strong></p>
+          <p>${message.replace(/\n/g, '<br>')}</p>
+          <hr>
+          <p style="color: #888; font-size: 12px;">
+            ${submissionId ? `Submission ID: ${submissionId} | ` : ''}${new Date().toLocaleString()}
+          </p>
+        `,
+      })
+
+      if (sendError) {
+        console.error('Resend API error:', sendError)
+        if (!submissionId) {
+          return NextResponse.json(
+            { error: 'Something went wrong. Please try again or contact us directly.' },
+            { status: 500 }
+          )
+        }
+      }
+    }
+
+    return NextResponse.json({ success: true, id: submissionId }, { status: 201 })
   } catch (error) {
     console.error('Contact form error:', error)
     return NextResponse.json(
