@@ -88,7 +88,7 @@ export default async function BlogPostPage({ params }: Props) {
               <div className="flex-1">
                 <div className="font-montserrat font-bold text-sm text-navy">{post.author}</div>
                 <div className="font-inter text-[11px] text-mid-grey">
-                  Licensed Customs Brokers · Nassau, Bahamas
+                  Licensed Customs Broker · Nassau, Bahamas
                 </div>
               </div>
               <div className="text-right">
