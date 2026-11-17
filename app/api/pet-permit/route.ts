@@ -187,7 +187,7 @@ export async function POST(request: Request) {
                <strong>Service:</strong> ${plan.name} — approved permit in ${plan.turnaround}<br/>
                <strong>Arrival date:</strong> ${escape(get('arrivalDate'))}</p>
             ${payLine}
-            <p>Your permit is processed once payment is received. Please make sure you're registered on the Customs Click2Clear portal.</p>
+            <p>Your permit is processed once payment is received. Your Click2Clear registration is handled by us as part of our brokerage service.</p>
             <p style="color:#888;font-size:12px">Atlas Brokerage · Nassau, The Bahamas · (242) 819-4311</p>
           </div>`,
       })

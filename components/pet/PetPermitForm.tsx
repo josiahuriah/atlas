@@ -30,7 +30,6 @@ import { COUNTRIES, PRIORITY_COUNTRIES } from '@/lib/countries'
 import {
   PET_PERMIT_PLANS,
   PET_GUIDE_URL,
-  CLICK2CLEAR_URL,
   formatMoney,
   type ServiceLevel,
 } from '@/lib/pet-permit'
@@ -905,22 +904,6 @@ function StepDocuments({
         </div>
       </div>
 
-      {/* Click2Clear reminder */}
-      <div className="flex items-start gap-3 bg-sky-blue/60 rounded-xl px-5 py-4">
-        <Info className="w-5 h-5 text-ocean-blue shrink-0 mt-0.5" />
-        <p className="font-inter text-[13px] leading-relaxed text-near-black/70">
-          The consignee must also be registered on the{' '}
-          <a
-            href={CLICK2CLEAR_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-ocean-blue font-semibold hover:underline inline-flex items-center gap-1"
-          >
-            Customs Click2Clear portal <ExternalLink className="w-3 h-3" />
-          </a>{' '}
-          (takes about 1 business day). Register now if you haven&apos;t already.
-        </p>
-      </div>
 
       {/* Service level */}
       <div>

@@ -5,7 +5,7 @@ const steps = [
     icon: UserCheck,
     label: 'Click2Clear registration',
     time: '1 business day',
-    text: 'Register as an individual on the Customs Click2Clear portal.',
+    text: 'Handled by Atlas Brokerage as part of our brokerage service.',
   },
   {
     icon: FileCheck2,

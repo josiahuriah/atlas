@@ -5,8 +5,6 @@
  */
 
 export const BAHFSA_URL = 'https://bahfsabahamas.com/'
-export const CLICK2CLEAR_URL =
-  'https://www.bahamascustoms.gov.bs/imports-and-exports/about-click2clear/info-for-individuals/'
 export const PET_GUIDE_URL = '/blog/how-to-bring-a-pet-into-the-bahamas'
 
 export type ServiceLevel = 'standard' | 'expedited'
@@ -104,7 +102,7 @@ const RABIES_WINDOWS: RabiesOption[] = [
 ]
 
 export const CERTIFICATE_NOTE =
-  'An international veterinary certificate, issued within ten (10) days of importation, is required and must attest to the following.'
+  'A valid vaccination certificate is required and must attest to the following.'
 
 export const REQUIREMENT_GROUPS: RequirementGroup[] = [
   {
