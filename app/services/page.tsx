@@ -152,11 +152,13 @@ export default function ServicesPage() {
                       {service.description}
                     </p>
                     <Link
-                      href="/contact"
+                      href={service.id === 'animal-imports' ? '/pet-permit' : '/contact'}
                       className="inline-flex items-center gap-2 text-ocean-blue font-semibold text-sm
                                  hover:text-navy transition-colors group/link"
                     >
-                      Get a quote for this service
+                      {service.id === 'animal-imports'
+                        ? 'Apply for a pet permit online'
+                        : 'Get a quote for this service'}
                       <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
                     </Link>
                   </div>
