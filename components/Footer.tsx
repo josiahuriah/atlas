@@ -77,6 +77,7 @@ export default function Footer() {
                 { href: '/blog', label: 'Import Guides' },
                 { href: '/services#vehicle-imports', label: 'Vehicle Imports' },
                 { href: '/services#duty-exemptions', label: 'Duty Exemptions' },
+                { href: '/pet-permit', label: 'Pet Permits' },
               ].map(link => (
                 <li key={link.href}>
                   <Link
